@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Student</title>
+</head>
+<body>
+    <h2>Edit Student Details</h2>
+    <form action="/edit/{{ student[0] }}" method="POST">
+        <label>Name:</label><br>
+        <input type="text" name="name" value="{{ student[1] }}" required><br><br>
+
+        <label>Email:</label><br>
+        <input type="email" name="email" value="{{ student[2] }}" required><br><br>
+
+        <label>Matric Number:</label><br>
+        <input type="text" name="matric_number" value="{{ student[3] }}" required><br><br>
+
+        <label>Department:</label><br>
+        <input type="text" name="department" value="{{ student[4] }}" required><br><br>
+
+        <label>Faculty:</label><br>
+        <input type="text" name="faculty" value="{{ student[5] }}" required><br><br>
+
+        <button type="submit">Update Details</button>
+        <a href="/">Cancel</a>
+    </form>
+</body>
+</html>
