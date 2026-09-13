@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Analytics Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#08050f; --panel:#100a1c; --line:#241a3a;
+    --ink:#ece5fb; --ink-dim:#8a7ab0;
+    --purple:#b07aff; --cyan:#2de8ff;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:'Inter',sans-serif; padding:36px 4vw;
+    display:flex; justify-content:center;
+    background-image:
+      linear-gradient(rgba(176,122,255,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(176,122,255,0.05) 1px, transparent 1px);
+    background-size:34px 34px;
+  }
+  .frame{
+    width:100%; max-width:780px;
+    border:1px solid var(--line);
+    background:rgba(16,10,28,0.88);
+    position:relative; padding:30px;
+  }
+  .frame::before, .frame::after{ content:""; position:absolute; width:16px; height:16px; border:2px solid var(--purple); }
+  .frame::before{ top:-1px; left:-1px; border-right:none; border-bottom:none; }
+  .frame::after{ bottom:-1px; right:-1px; border-left:none; border-top:none; }
+
+  .top-row{ display:flex; justify-content:space-between; align-items:center; margin-bottom:22px; padding-bottom:16px; border-bottom:1px solid var(--line); }
+  .sys-label{ font-family:'Share Tech Mono',monospace; font-size:12px; color:var(--purple); letter-spacing:.15em; margin-bottom:6px; }
+  h2{ margin:0; font-size:22px; }
+  .btn-back{ font-family:'Share Tech Mono',monospace; font-size:12.5px; letter-spacing:.06em; padding:8px 15px; border:1px solid var(--purple); color:var(--purple); text-decoration:none; }
+  .btn-back:hover{ background:var(--purple); color:#000; }
+
+  .total-panel{
+    text-align:center; padding:22px; border:1px solid var(--line); margin-bottom:22px;
+    background:rgba(176,122,255,0.05);
+  }
+  .total-number{ font-family:'Share Tech Mono',monospace; font-size:44px; color:var(--cyan); }
+  .total-label{ font-family:'Share Tech Mono',monospace; font-size:11px; letter-spacing:.15em; color:var(--ink-dim); text-transform:uppercase; margin-top:4px; }
+
+  .panel{ border:1px solid var(--line); padding:20px 22px; margin-bottom:18px; }
+  .panel h3{ font-family:'Share Tech Mono',monospace; font-size:13px; letter-spacing:.1em; color:var(--purple); text-transform:uppercase; margin:0 0 16px; }
+  .bar-row{ margin-bottom:14px; }
+  .bar-label{ display:flex; justify-content:space-between; font-family:'Share Tech Mono',monospace; font-size:12.5px; color:var(--ink); margin-bottom:5px; }
+  .bar-track{ height:8px; background:var(--panel); border:1px solid var(--line); }
+  .bar-fill{ height:100%; background:linear-gradient(90deg, var(--purple), var(--cyan)); }
+</style>
+</head>
+<body>
+
+<div class="frame">
+  <div class="top-row">
+    <div>
+      <div class="sys-label">SYSTEM // ANALYTICS_CONSOLE</div>
+      <h2>Registry Breakdown</h2>
+    </div>
+    <a href="/" class="btn-back">&lt; BACK</a>
+  </div>
+
+  <div class="total-panel">
+    <div class="total-number mono">{{ '%04d' | format(total_students) }}</div>
+    <div class="total-label">Total Registered Students</div>
+  </div>
+
+  <div class="panel">
+    <h3>By Department</h3>
+    {% for department, count in by_department %}
+    <div class="bar-row">
+      <div class="bar-label"><span>{{ department }}</span><span>{{ count }}</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width: {{ (count / max_department_count * 100) | round(1) }}%;"></div></div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="panel">
+    <h3>By Faculty</h3>
+    {% for faculty, count in by_faculty %}
+    <div class="bar-row">
+      <div class="bar-label"><span>{{ faculty }}</span><span>{{ count }}</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width: {{ (count / max_faculty_count * 100) | round(1) }}%;"></div></div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+</body>
+</html>
