@@ -1,29 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Edit Student</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modify Record</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0805; --panel:#14100a; --line:#302410;
+    --ink:#f7f0e2; --ink-dim:#907a5f;
+    --amber:#ffb84d; --amber-dim:rgba(255,184,77,0.12);
+    --red:#ff4d6d;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:'Inter',sans-serif; min-height:100vh;
+    display:flex; align-items:center; justify-content:center; padding:36px 20px;
+    background-image:
+      linear-gradient(rgba(255,184,77,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,184,77,0.05) 1px, transparent 1px);
+    background-size:34px 34px;
+  }
+  .frame{
+    width:100%; max-width:480px;
+    border:1px solid var(--line);
+    background:rgba(20,16,10,0.88);
+    position:relative; padding:34px;
+  }
+  .frame::before, .frame::after{ content:""; position:absolute; width:16px; height:16px; border:2px solid var(--amber); }
+  .frame::before{ top:-1px; left:-1px; border-right:none; border-bottom:none; }
+  .frame::after{ bottom:-1px; right:-1px; border-left:none; border-top:none; }
+
+  .sys-label{ font-family:'Share Tech Mono',monospace; font-size:12px; color:var(--amber); letter-spacing:.15em; margin-bottom:8px; }
+  h2{ margin:0 0 24px; font-size:22px; }
+
+  .flash-box{ font-family:'Share Tech Mono',monospace; font-size:12.5px; border-left:3px solid var(--red); background:rgba(255,77,109,0.1); color:#ffb3c0; padding:12px 14px; margin-bottom:18px; }
+  .flash-box p{ margin:3px 0; }
+
+  .field{ margin-bottom:18px; }
+  label{ display:block; font-family:'Share Tech Mono',monospace; font-size:11.5px; color:var(--amber); letter-spacing:.1em; margin-bottom:7px; text-transform:uppercase; }
+  input[type="text"], input[type="email"]{
+    width:100%; padding:11px 13px; background:var(--panel); border:1px solid var(--line);
+    color:var(--ink); font-family:'Share Tech Mono',monospace; font-size:14px;
+  }
+  input:focus{ outline:none; border-color:var(--amber); box-shadow:0 0 0 1px var(--amber); }
+
+  .actions{ margin-top:26px; display:flex; align-items:center; gap:18px; }
+  .btn-submit{
+    font-family:'Share Tech Mono',monospace; font-size:13px; letter-spacing:.08em;
+    padding:11px 22px; border:1px solid var(--amber); color:var(--amber);
+    background:transparent; cursor:pointer; transition:all .15s ease;
+  }
+  .btn-submit:hover{ background:var(--amber); color:#000; }
+  .btn-cancel{ font-family:'Share Tech Mono',monospace; font-size:12.5px; color:var(--ink-dim); text-decoration:none; }
+  .btn-cancel:hover{ color:var(--ink); }
+</style>
 </head>
 <body>
-    <h2>Edit Student Details</h2>
-    <form action="/edit/{{ student[0] }}" method="POST">
-        <label>Name:</label><br>
-        <input type="text" name="name" value="{{ student[1] }}" required><br><br>
 
-        <label>Email:</label><br>
-        <input type="email" name="email" value="{{ student[2] }}" required><br><br>
+<div class="frame">
+  <div class="sys-label">SYSTEM // RECORD_MODIFY :: ID-{{ '%04d' | format(student[0]) }}</div>
+  <h2>Edit Student Details</h2>
 
-        <label>Matric Number:</label><br>
-        <input type="text" name="matric_number" value="{{ student[3] }}" required><br><br>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-box">
+        {% for category, message in messages %}<p>&gt; {{ message }}</p>{% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
 
-        <label>Department:</label><br>
-        <input type="text" name="department" value="{{ student[4] }}" required><br><br>
+  <form action="/edit/{{ student[0] }}" method="POST">
+    <div class="field">
+      <label for="name">Full Name</label>
+      <input type="text" id="name" name="name" value="{{ student[1] }}" required>
+    </div>
+    <div class="field">
+      <label for="email">Email Address</label>
+      <input type="email" id="email" name="email" value="{{ student[2] }}" required>
+    </div>
+    <div class="field">
+      <label for="matric_number">Matric Number</label>
+      <input type="text" id="matric_number" name="matric_number" value="{{ student[3] }}" required>
+    </div>
+    <div class="field">
+      <label for="department">Department</label>
+      <input type="text" id="department" name="department" value="{{ student[4] }}" required>
+    </div>
+    <div class="field">
+      <label for="faculty">Faculty</label>
+      <input type="text" id="faculty" name="faculty" value="{{ student[5] }}" required>
+    </div>
+    <div class="actions">
+      <button type="submit" class="btn-submit">[ UPDATE ]</button>
+      <a href="/" class="btn-cancel">cancel</a>
+    </div>
+  </form>
+</div>
 
-        <label>Faculty:</label><br>
-        <input type="text" name="faculty" value="{{ student[5] }}" required><br><br>
-
-        <button type="submit">Update Details</button>
-        <a href="/">Cancel</a>
-    </form>
 </body>
 </html>
