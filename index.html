@@ -1,53 +1,139 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Student List</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Registry</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#05080a; --panel:#0a1014; --line:#1a2b30;
+    --ink:#dff5f7; --ink-dim:#5f8790;
+    --cyan:#2de8ff; --cyan-dim:rgba(45,232,255,0.15);
+    --red:#ff4d6d;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:'Inter',sans-serif; padding:36px 4vw;
+    background-image:
+      linear-gradient(rgba(45,232,255,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(45,232,255,0.05) 1px, transparent 1px);
+    background-size:34px 34px;
+  }
+  .mono{ font-family:'Share Tech Mono',monospace; }
+  a{ color:var(--cyan); }
+
+  .frame{
+    max-width:1150px; margin:0 auto;
+    border:1px solid var(--line);
+    background:rgba(10,16,20,0.85);
+    position:relative;
+    padding:30px;
+  }
+  .frame::before, .frame::after{
+    content:""; position:absolute; width:16px; height:16px;
+    border:2px solid var(--cyan);
+  }
+  .frame::before{ top:-1px; left:-1px; border-right:none; border-bottom:none; }
+  .frame::after{ bottom:-1px; right:-1px; border-left:none; border-top:none; }
+
+  .top-row{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; margin-bottom:22px; padding-bottom:18px; border-bottom:1px solid var(--line); }
+  .sys-label{ font-family:'Share Tech Mono',monospace; font-size:12px; color:var(--cyan); letter-spacing:.15em; margin-bottom:6px; }
+  h2{ margin:0; font-size:24px; letter-spacing:.02em; }
+
+  .actions{ display:flex; gap:10px; flex-wrap:wrap; }
+  .btn{
+    font-family:'Share Tech Mono',monospace; font-size:12.5px; letter-spacing:.08em;
+    padding:9px 16px; border:1px solid var(--cyan); color:var(--cyan);
+    background:transparent; text-decoration:none; cursor:pointer;
+    transition:all .15s ease;
+  }
+  .btn:hover{ background:var(--cyan); color:#000; }
+
+  .flash{ font-family:'Share Tech Mono',monospace; font-size:13px; padding:10px 14px; border-left:3px solid var(--cyan); background:var(--cyan-dim); margin-bottom:16px; letter-spacing:.02em; }
+  .flash-error{ border-left-color:var(--red); background:rgba(255,77,109,0.1); color:#ffb3c0; }
+
+  .search-bar input{
+    width:100%; padding:12px 16px; margin-bottom:20px;
+    background:var(--panel); border:1px solid var(--line); color:var(--ink);
+    font-family:'Share Tech Mono',monospace; font-size:14px;
+  }
+  .search-bar input::placeholder{ color:var(--ink-dim); }
+  .search-bar input:focus{ outline:none; border-color:var(--cyan); }
+
+  table{ width:100%; border-collapse:collapse; font-size:14px; }
+  th{ font-family:'Share Tech Mono',monospace; text-align:left; font-size:11px; letter-spacing:.1em; color:var(--cyan); padding:10px 12px; border-bottom:1px solid var(--line); text-transform:uppercase; }
+  td{ padding:12px; border-bottom:1px solid rgba(26,43,48,0.6); color:var(--ink); }
+  tbody tr:hover{ background:rgba(45,232,255,0.04); }
+
+  .edit-link{ color:var(--cyan); text-decoration:none; font-family:'Share Tech Mono',monospace; font-size:12.5px; }
+  .delete-btn{ background:none; border:none; color:var(--red); font-family:'Share Tech Mono',monospace; font-size:12.5px; cursor:pointer; padding:0; }
+  .edit-link:hover, .delete-btn:hover{ text-decoration:underline; }
+  .sep{ color:var(--line); margin:0 8px; }
+  .empty{ text-align:center; padding:30px; color:var(--ink-dim); font-family:'Share Tech Mono',monospace; }
+</style>
 </head>
 <body>
-    <h2>Student Management CRUD Application</h2>
-    <a href="/add"><button>Add New Student</button></a>
-    <br><br>
-    <table border="1" cellpadding="10" cellspacing="0">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Matric Number</th>
-                <th>Department</th>
-                <th>Faculty</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for student in students %}
-            <tr>
-                <td>{{ student[0] }}</td>
-                <td>{{ student[1] }}</td>
-                <td>{{ student[2] }}</td>
-                <td>{{ student[3] }}</td>
-                <td>{{ student[4] }}</td>
-                <td>{{ student[5] }}</td>
-                <td>
-                    <a href="/edit/{{ student[0] }}">Edit</a> |
-                    <a href="/delete/{{ student[0] }}" onclick="return confirm('Are you sure?')">Delete</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+
+<div class="frame">
+  <div class="top-row">
+    <div>
+      <div class="sys-label">SYSTEM // STUDENT_REGISTRY</div>
+      <h2>Student Records</h2>
+    </div>
+    <div class="actions">
+      <a href="/add" class="btn">+ NEW ENTRY</a>
+      <a href="/export/pdf" class="btn">EXPORT PDF</a>
+      <a href="/analytics" class="btn">ANALYTICS</a>
+    </div>
+  </div>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="flash {% if category == 'error' %}flash-error{% endif %}">&gt; {{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <form class="search-bar" action="/" method="GET">
+    <input type="text" name="q" placeholder="SEARCH_QUERY :: name / department / faculty" value="{{ search_term }}">
+  </form>
+
+  {% if students %}
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th><th>Name</th><th>Email</th><th>Matric No.</th><th>Department</th><th>Faculty</th><th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for student in students %}
+      <tr>
+        <td class="mono">{{ '%04d' | format(student[0]) }}</td>
+        <td>{{ student[1] }}</td>
+        <td>{{ student[2] }}</td>
+        <td>{{ student[3] }}</td>
+        <td>{{ student[4] }}</td>
+        <td>{{ student[5] }}</td>
+        <td>
+          <a href="/edit/{{ student[0] }}" class="edit-link">EDIT</a>
+          <span class="sep">|</span>
+          <form style="display:inline" action="/delete/{{ student[0] }}" method="POST" onsubmit="return confirm('Delete {{ student[1] }}?');">
+            <button type="submit" class="delete-btn">DELETE</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <div class="empty">// NO RECORDS FOUND{% if search_term %} FOR "{{ search_term }}"{% endif %}</div>
+  {% endif %}
+</div>
+
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
 
