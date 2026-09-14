@@ -3,7 +3,6 @@ pymysql.install_as_MySQLdb()
 import os
 import re
 from flask import Flask, render_template, request, redirect, flash, Response
-from flask_mysqldb import MySQL
 from dotenv import load_dotenv
 from fpdf import FPDF
 
