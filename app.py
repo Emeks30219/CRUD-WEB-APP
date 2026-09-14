@@ -17,7 +17,7 @@ def get_db_connection():
         user=os.environ.get("MYSQLUSER", os.environ.get("MYSQL_USER", "root")),
         password=os.environ.get("MYSQLPASSWORD", os.environ.get("MYSQL_PASSWORD", "")),
         database=os.environ.get("MYSQLDATABASE", os.environ.get("MYSQL_DB", "railway")),
-        port=int(os.environ.get("MYSQLPORT", os.environ.get("MYSQL_PORT", 3306))),
+        port=int(os.environ.get("MYSQLPORT", os.environ.get("MYSQL_PORT", 8080))),
         cursorclass=pymysql.cursors.DictCursor
     )
 
