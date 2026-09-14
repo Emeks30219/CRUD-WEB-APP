@@ -7,7 +7,7 @@ from fpdf import FPDF
 
 load_dotenv()
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder=".")
 app.secret_key = os.environ.get("SECRET_KEY", "change-this-in-your-.env-file")
 
 # Database connection helper using PyMySQL DictCursor
