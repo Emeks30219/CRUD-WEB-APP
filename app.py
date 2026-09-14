@@ -1,3 +1,5 @@
+import pymysql
+pymysql.install_as_MySQLdb()
 import os
 import re
 from flask import Flask, render_template, request, redirect, flash, Response
