@@ -1,98 +1,78 @@
 # Student Management System (Flask + MySQL CRUD App)
 
-A full CRUD (Create, Read, Update, Delete) web application built with Flask and MySQL for managing student records. The frontend uses plain HTML only — no CSS — keeping the focus on backend logic, routing, and database operations.
+A full CRUD (Create, Read, Update, Delete) web application built with Flask and MySQL for managing student records — deployed live, with search, PDF export, an analytics dashboard, and server-side validation.
+
+**Live app:** https://crud-web-app-production-d90e.up.railway.app/
 
 ## Overview
 
-This project was built from the ground up with no prior experience in Flask, SQL, or web development. It demonstrates a complete web application flow: a Flask server handling HTTP requests, a MySQL database storing student data, and HTML templates rendering the results — all wired together with basic routing and forms.
+This project started as a first-ever Flask + SQL build with no prior web development experience — plain, unstyled HTML templates focused purely on backend logic. It has since grown into a genuinely production-shaped application: a security fix (debug mode, environment-based secrets), real feature additions, a full interface redesign, and a working live deployment on Railway with a connected MySQL database.
 
 ## Features
 
-- **Create** — Add a new student record via an HTML form
-- **Read** — View a list of all students, and view individual student details
-- **Update** — Edit an existing student's information
-- **Delete** — Remove a student record from the database
-- Plain, unstyled HTML templates (no CSS) so the structure and logic of the app are front and center
+- **Create** — Add a new student record, with server-side validation on every field
+- **Read** — View all students, with live search by name, department, or faculty
+- **Update** — Edit an existing student's information, with duplicate matric-number protection
+- **Delete** — Remove a record, protected behind a POST request (not a plain link) to prevent accidental or automated deletion
+- **PDF export** — Download the full student list as a formatted PDF
+- **Analytics dashboard** — Visual breakdown of students by department and faculty
+- **Flash messages** — Clear success/error feedback after every action
+- A distinct grid-tech visual interface across all pages, sharing one design language with a unique accent color per screen
 
-## Tech Stack
+## Security
 
-- **Backend:** Python, Flask
-- **Database:** MySQL
-- **Frontend:** HTML (Jinja2 templating via Flask, no CSS)
-- **Connector:** `flask-mysqldb` or `mysql-connector-python`
+- Debug mode is off by default, controlled by an environment variable — never hardcoded on
+- Database credentials and the app's secret key are loaded from environment variables, never committed to the repository
+- All database queries use parameterized statements (no raw string SQL), protecting against SQL injection
+- Delete requires a POST request with a confirmation prompt, not a plain clickable link
+- Matric numbers are enforced unique both at the application level and the database level
 
-## Requirements
+## Tech stack
+
+Python · Flask · MySQL · Jinja2 · fpdf2 (PDF export) · Railway (hosting + database)
+
+## Project structure
 
 ```
-flask
-flask-mysqldb
+CRUD-WEB-APP/
+├── app.py
+├── index.html
+├── add.html
+├── edit.html
+├── analytics.html
+├── requirements.txt
+├── Procfile
+└── .gitignore
 ```
-*(or `mysql-connector-python`, depending on which connector is used)*
 
-Install with:
+## Running it locally
+
 ```bash
-pip install flask flask-mysqldb
+pip install -r requirements.txt
 ```
 
-## Database Setup
+Create a `.env` file (never committed) with:
+```
+MYSQL_HOST=your-host
+MYSQL_PORT=your-port
+MYSQL_USER=your-user
+MYSQL_PASSWORD=your-password
+MYSQL_DB=your-database-name
+SECRET_KEY=a-long-random-string
+FLASK_DEBUG=False
+```
 
-1. Create a MySQL database, e.g. `student_db`.
-2. Create a `students` table:
-   ```sql
-   CREATE TABLE students (
-       id INT AUTO_INCREMENT PRIMARY KEY,
-       name VARCHAR(100) NOT NULL,
-       email VARCHAR(100),
-       course VARCHAR(100),
-       age INT
-   );
-   ```
-3. Update the database credentials (host, user, password, database name) in the app's config section.
-
-## Usage
-
+Then:
 ```bash
 python app.py
 ```
 
-Then open `http://127.0.0.1:5000` in your browser.
+## Deployment
 
-### Routes
+Deployed on **Railway**, with both the Flask app and its MySQL database hosted in the same project — database connection details are injected automatically via Railway's reference variables, rather than copied by hand between separate services.
 
-| Route | Method | Description |
-|---|---|---|
-| `/` | GET | List all students |
-| `/add` | GET, POST | Form to add a new student |
-| `/edit/<id>` | GET, POST | Form to update a student's details |
-| `/delete/<id>` | GET/POST | Delete a student record |
+## What I'd improve next
 
-*(Adjust route names/paths above to match your actual `app.py` if they differ.)*
-
-## Project Structure
-
-```
-student-management-system/
-├── app.py                # Flask application and routes
-├── templates/
-│   ├── index.html        # List of students
-│   ├── add.html          # Add student form
-│   └── edit.html         # Edit student form
-└── requirements.txt
-```
-
-## Key Concepts Demonstrated
-
-- Flask routing and request handling (GET/POST)
-- Jinja2 templating for dynamic HTML rendering
-- MySQL CRUD operations via Python
-- Basic form handling and data validation
-- Connecting a Python backend to a relational database end-to-end
-
-## Project Background
-
-Built as a graded university assignment, including a full technical defense/viva explaining the architecture, database schema, and code decisions — completed with zero prior background in web development or SQL.
-
-## Author
-
-Emeka — Computer Science student, Bingham University
-GitHub: [Emeks30219](https://github.com/Emeks30219)
+- Native-speaker-style review of form validation edge cases
+- Automated tests for the database-facing routes
+- Pagination for the student list once it grows past a page or two
